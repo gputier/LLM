@@ -1,0 +1,6 @@
+[submodule "llm-station-cuda"]
+	path = llm-station-cuda
+	url = https://github.com/gputier/llm-station-cuda.git
+[submodule "llm-station-vulkan"]
+	path = llm-station-vulkan
+	url = https://github.com/gputier/llm-station-vulkan.git
