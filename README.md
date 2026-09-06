@@ -9,7 +9,7 @@ Each station is its own repository. They are included here as submodules.
 
 | Station | GPU | Backend | Models |
 |---|---|---|---|
-| [llm-station-cuda](https://github.com/gputier/llm-station-cuda) | RTX 5090, 32 GB | CUDA, three builds | Muse Glimmer 30B, Qwen3.8-27B NVFP4, an abliterated variant, an embedder |
+| [llm-station-cuda](https://github.com/gputier/llm-station-cuda) | RTX 5090, 32 GB | CUDA, four builds | Muse Glimmer 30B, Qwen3.8-27B NVFP4, an abliterated variant, Tiel-Coder 35B-A3B, Ornith 1.5 9B, an embedder |
 | [llm-station-vulkan](https://github.com/gputier/llm-station-vulkan) | RX 5700 XT, 8 GB | Vulkan, prebuilt | Qwen3-VL-4B, plus four measured candidates |
 
 ```bash
