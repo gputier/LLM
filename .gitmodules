@@ -4,3 +4,6 @@
 [submodule "llm-station-vulkan"]
 	path = llm-station-vulkan
 	url = https://github.com/gputier/llm-station-vulkan.git
+[submodule "llm-station-embedder"]
+	path = llm-station-embedder
+	url = https://github.com/gputier/llm-station-embedder.git
