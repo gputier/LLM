@@ -1,9 +1,9 @@
 # LLM stations
 
-Two self-hosted `llama.cpp` boxes that serve **Claude Code** from local weights,
-with no translation proxy in between. A Windows machine runs `llama-server`, a
-macOS laptop runs the client pointed at it, and a launcher script loads the right
-model over SSH before handing over.
+Self-hosted `llama.cpp` boxes serving local weights over HTTP, with no
+translation proxy in between. A Windows machine runs `llama-server`, a macOS
+laptop runs the client pointed at it, and a control script loads the right model
+over SSH.
 
 Each station is its own repository. They are included here as submodules.
 
@@ -11,17 +11,28 @@ Each station is its own repository. They are included here as submodules.
 |---|---|---|---|
 | [llm-station-cuda](https://github.com/gputier/llm-station-cuda) | RTX 5090, 32 GB | CUDA, four builds | Muse Glimmer 30B, Qwen3.8-27B NVFP4, an abliterated variant, Tiel-Coder 35B-A3B, Ornith 1.5 9B, an embedder |
 | [llm-station-vulkan](https://github.com/gputier/llm-station-vulkan) | RX 5700 XT, 8 GB | Vulkan, prebuilt | Qwen3-VL-4B, plus four measured candidates |
+| [llm-station-embedder](https://github.com/gputier/llm-station-embedder) | RX 5700 XT, 8 GB | Vulkan, prebuilt | Qwen3-Embedding-0.6B, embeddings only |
+
+The last two are the **same physical machine**. The Vulkan repository records
+what it took to serve a vision-language model on an 8 GB RDNA1 card, and the
+measurement that ended the attempt; the embedder repository is what the machine
+does now, and why that job fits the hardware. Both are kept: the second one only
+makes sense next to the first.
 
 ```bash
 git clone --recurse-submodules https://github.com/gputier/LLM.git
 ```
 
-## Why two, and why the contrast matters
+## Why more than one, and why the contrast matters
 
-Same `llama.cpp`, same Windows host, same client pattern, but 32 GB of VRAM
-against 8, CUDA against Vulkan, three custom builds against a prebuilt binary,
-and an open server against one locked behind an API key. What survives that
-change is the part worth copying.
+Same `llama.cpp`, same Windows host, same control script, but 32 GB of VRAM
+against 8, CUDA against Vulkan, three custom builds against a prebuilt binary.
+What survives that change is the part worth copying.
+
+The third repository adds a different lesson: what to do when the measurements
+say the hardware cannot do the job you bought it for. The 8 GB card was never
+going to serve an agentic client, and no flag was going to fix a missing
+instruction set. It now serves embeddings, where the same curve barely shows.
 
 ## What these repositories actually contain
 
@@ -45,11 +56,17 @@ A few of the findings, each documented in full in its repository:
   only one able to serve the model.
 - A prefix cache is destroyed by one changed character at the top of a prompt.
   Ninety-fold difference, entirely from prompt ordering.
+- The vendor's own recommended launch flag can be wrong for your card. An
+  embedding model's published line uses `-ub 8192`; on RDNA1 that fails to
+  allocate a pinned buffer, logs a warning rather than an error, and runs 50%
+  slower than `-ub 2048`.
+- Chunking beats tuning. The same 4,800-token text embeds in 13.7 s as one input
+  and 0.09 s as eight, on the same server with the same flags.
 
 Negative results are kept on purpose. Half the comments exist to stop the next
 person re-testing something already found to gain nothing.
 
 ## License
 
-MIT, in both repositories. `llama.cpp` is MIT; model weights carry their own
+MIT, in all three repositories. `llama.cpp` is MIT; model weights carry their own
 licenses.
