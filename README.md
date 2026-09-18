@@ -9,7 +9,7 @@ Each station is its own repository. They are included here as submodules.
 
 | Station | GPU | Backend | Models |
 |---|---|---|---|
-| [llm-station-cuda](https://github.com/gputier/llm-station-cuda) | RTX 5090, 32 GB | CUDA, four builds | Muse Glimmer 30B, Qwen3.8-27B NVFP4, an abliterated variant, Tiel-Coder 35B-A3B, Ornith 1.5 9B, an embedder |
+| [llm-station-cuda](https://github.com/gputier/llm-station-cuda) | RTX 5090, 32 GB | CUDA, six builds, one of them a fork | Eleven profiles: Tiel-Coder and KAT-Coder 35B-A3B, Muse Glimmer 30B, Qwen3.8-27B NVFP4 and an abliterated variant, Ornith 1.5 9B, Nex-N2.5-mini, Spark-X2.5-4B, both Ternary Bonsai generations, an embedder |
 | [llm-station-vulkan](https://github.com/gputier/llm-station-vulkan) | RX 5700 XT, 8 GB | Vulkan, prebuilt | Qwen3-VL-4B, plus four measured candidates |
 | [llm-station-embedder](https://github.com/gputier/llm-station-embedder) | RX 5700 XT, 8 GB | Vulkan, prebuilt | Qwen3-Embedding-0.6B, embeddings only |
 
@@ -21,12 +21,21 @@ makes sense next to the first.
 
 ```bash
 git clone --recurse-submodules https://github.com/gputier/LLM.git
+cd LLM && ./scripts/install-hooks.sh
 ```
+
+The second line wires the pre-push gate, here and in every submodule that
+carries one. Before anything reaches a public remote it reads the commits being
+sent and the tree they come from, looking for plaintext secrets, and it needs
+Docker. A fresh clone has no hooks wired and nothing
+warns about it, which is why the script prints what git resolved rather than
+claiming success. What it blocks on, and what to do then:
+[llm-station-cuda/docs/security-gate.md](llm-station-cuda/docs/security-gate.md).
 
 ## Why more than one, and why the contrast matters
 
 Same `llama.cpp`, same Windows host, same control script, but 32 GB of VRAM
-against 8, CUDA against Vulkan, three custom builds against a prebuilt binary.
+against 8, CUDA against Vulkan, six coexisting builds against a prebuilt binary.
 What survives that change is the part worth copying.
 
 The third repository adds a different lesson: what to do when the measurements
