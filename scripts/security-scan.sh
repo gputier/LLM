@@ -34,6 +34,10 @@ SCANNERS=(--scanners "vuln,secret,misconfig")
 # everywhere else in the house. The image lives on the private registry, so this
 # hook needs the VPN, which is deliberate: a floating public tag changes content
 # under us and makes a verdict impossible to reproduce.
+#
+# The cache volume carries the vulnerability database, and its name is
+# deliberately the same as in the three stations: they all run the image pinned
+# above, so they read the same database and sharing it saves three downloads.
 TRIVY_IMAGE="${TRIVY_IMAGE:-registry.shpv.work/shpv-dirupt/wiki/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969}"
 TRIVY_CACHE_VOLUME="${TRIVY_CACHE_VOLUME:-llm-station-trivy-cache}"
 
