@@ -7,17 +7,19 @@ over SSH.
 
 Each station is its own repository. They are included here as submodules.
 
-| Station | GPU | Backend | Models |
-|---|---|---|---|
-| [llm-station-cuda](https://github.com/gputier/llm-station-cuda) | RTX 5090, 32 GB | CUDA, seven builds, one of them a fork and one compiled from a pull request | Fifteen profiles: Tiel-Coder and KAT-Coder 35B-A3B, Muse Glimmer 30B, Qwen3.8-27B NVFP4 and three fine-tunes (abliterated, TurboFCFusion, Twin-Turbo 709-L, the one in daily use), Ornith 1.5 9B, Nex-N2.5-mini, Spark-X2.5-4B, both Ternary Bonsai generations, an embedder, plus two rejected on 2026-09-19 whose weights are gone (Whittle, Xing4.0) |
-| [llm-station-vulkan](https://github.com/gputier/llm-station-vulkan) | RX 5700 XT, 8 GB | Vulkan, prebuilt | Qwen3-VL-4B, plus four measured candidates |
-| [llm-station-embedder](https://github.com/gputier/llm-station-embedder) | RX 5700 XT, 8 GB | Vulkan, prebuilt | Qwen3-Embedding-0.6B, embeddings only |
+| Station                                                                 | GPU                                                            | Backend                                                                                                                     | Models                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [llm-station-cuda](https://github.com/gputier/llm-station-cuda)         | RTX 5090, 32 GB, plus a second box on an RTX 4080 SUPER, 16 GB | CUDA, eight builds, two of them forks and one compiled from a pull request; the 16 GB box runs the BeeLlama fork on its own | Fifteen profiles: Tiel-Coder and KAT-Coder 35B-A3B, Muse Glimmer 30B, Qwen3.8-27B NVFP4 and three fine-tunes (abliterated, TurboFCFusion, Twin-Turbo 709-L, the one in daily use), Ornith 1.5 9B, Nex-N2.5-mini, Spark-X2.5-4B, both Ternary Bonsai generations, an embedder, plus two rejected on 2026-09-19 whose weights are gone (Whittle, Xing4.0). The 16 GB box serves two of its own, `tiel` and `qwen36`, both 35B-A3B at the full window |
+| [llm-station-vulkan](https://github.com/gputier/llm-station-vulkan)     | RX 5700 XT, 8 GB                                               | Vulkan, prebuilt                                                                                                            | Nothing any more. Qwen3-VL-4B and four measured candidates, until 2026-09-07                                                                                                                                                                                                                                                                                                                                                                       |
+| [llm-station-embedder](https://github.com/gputier/llm-station-embedder) | RX 5700 XT, 8 GB                                               | Vulkan, prebuilt                                                                                                            | Qwen3-Embedding-0.6B, embeddings only                                                                                                                                                                                                                                                                                                                                                                                                              |
 
-The last two are the **same physical machine**. The Vulkan repository records
-what it took to serve a vision-language model on an 8 GB RDNA1 card, and the
-measurement that ended the attempt; the embedder repository is what the machine
-does now, and why that job fits the hardware. Both are kept: the second one only
-makes sense next to the first.
+The last two are the **same physical machine**, and only the second describes
+what it does today. The Vulkan repository records what it took to serve a
+vision-language model on an 8 GB RDNA1 card, and the measurement that ended the
+attempt on 2026-09-07: those weights are off the box and its profiles are gone
+from the control script. The embedder repository is what the machine runs now,
+and why that job fits the hardware. Both are kept: the second one only makes
+sense next to the first.
 
 ```bash
 git clone --recurse-submodules https://github.com/gputier/LLM.git
@@ -35,8 +37,8 @@ claiming success. What it blocks on, and what to do then:
 ## Why more than one, and why the contrast matters
 
 Same `llama.cpp`, same Windows host, same control script, but 32 GB of VRAM
-against 8, CUDA against Vulkan, six coexisting builds against a prebuilt binary.
-What survives that change is the part worth copying.
+against 8, CUDA against Vulkan, eight coexisting builds against a prebuilt
+binary. What survives that change is the part worth copying.
 
 The third repository adds a different lesson: what to do when the measurements
 say the hardware cannot do the job you bought it for. The 8 GB card was never
