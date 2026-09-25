@@ -1,1 +1,4 @@
 .DS_Store
+
+# Local clone of pfsense-mcp, an independent repository
+/pfsense/
