@@ -1,0 +1,23 @@
+# Vulnerabilities and misconfigurations ignored, each with its reason and its
+# re-audit date. Trivy's plain .trivyignore has no per-path scoping (only
+# .trivyignore.yaml does, and scripts/security-scan.sh never passes
+# --ignorefile, so only the default ".trivyignore", this file, is read): an
+# ID listed here is silenced for the whole tree this hook scans (this
+# repository plus its submodules), not just for the one file that earned the
+# exception.
+#
+# AVD-DS-0002 (HIGH, "Specify at least 1 USER command in Dockerfile with
+# non-root user"): llm-station-cuda/bench/harness/benchrun.Dockerfile only,
+# same exception and same reasoning as that submodule's own .trivyignore
+# (read there for the detail): its containers talk to the HOST docker
+# daemon over /var/run/docker.sock, whose owning GID is not the same number
+# on every host (Docker Desktop's VM here, a Linux station's docker group
+# elsewhere), so a non-root user baked in at build time cannot be given
+# access to it without either widening the socket's own permissions or an
+# entrypoint script that mutates a host resource at container start, both
+# worse than the finding itself. Every other Dockerfile under
+# llm-station-cuda/bench/harness/ (agent, aider, bfcl, lcb, livebench,
+# longbench, ruler) runs as a real non-root user; this is the one exception.
+# Re-audit: 2027-03-01, or sooner if Docker ships a portable way to join an
+# arbitrary host GID from a Dockerfile without an entrypoint script.
+AVD-DS-0002
